@@ -27,6 +27,7 @@ import {BookOpen, Home} from "lucide-react";
 import SubjectsList from "@/pages/subjects/list.tsx";
 import SubjectsCreate from "@/pages/subjects/create.tsx";
 
+
 function App() {
   return (
     <BrowserRouter>
