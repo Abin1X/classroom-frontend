@@ -1,36 +1,51 @@
-import {
-  BaseRecord,
-  DataProvider,
-  GetListParams,
-  GetListResponse,
-} from "@refinedev/core";
-import { MOCK_SUBJECTS } from "@/constants/mocksubs";
+import { createDataProvider, type CreateDataProviderOptions } from "@refinedev/rest";
+import type { ListResponse } from "@/types";
+import { BACKEND_BASE_URL } from "@/constants";
 
+const options: CreateDataProviderOptions = {
+  getList: {
+    getEndpoint: ({ resource }) => resource,
 
-export const dataProvider: DataProvider = {
-  getList: async <TData extends BaseRecord = BaseRecord>({
-                                                           resource,
-                                                         }: GetListParams): Promise<GetListResponse<TData>> => {
-    if (resource !== "subjects") return { data: [] as TData[], total: 0 };
+    buildQueryParams: async ({ pagination, filters }) => {
+      const query: Record<string, string | number> = {
+        page: pagination?.currentPage ?? 1,
+        limit: pagination?.pageSize ?? 10,
+      };
 
-    return {
-      data: MOCK_SUBJECTS as unknown as TData[],
-      total: MOCK_SUBJECTS.length,
-    };
-  },
+      for (const filter of filters ?? []) {
+        if (!("field" in filter) || filter.value == null) continue;
 
-  getOne: async () => {
-    throw new Error("This function is not present in the mock");
-  },
-  create: async () => {
-    throw new Error("This function is not present in the mock");
-  },
-  update: async () => {
-    throw new Error("This function is not present in the mock");
-  },
-  deleteOne: async () => {
-    throw new Error("This function is not present in the mock");
-  },
+        if (filter.field === "name" && filter.operator === "contains") {
+          query.search = String(filter.value);
+        } else if (filter.field === "department" && filter.operator === "eq") {
+          query.department = String(filter.value);
+        }
+      }
 
-  getApiUrl: () => "",
+      return query;
+    },
+
+    mapResponse: async (response) => {
+      if (!response.ok) {
+        throw {
+          message: "Failed to fetch subjects",
+          statusCode: response.status,
+        };
+      }
+
+      const payload: ListResponse = await response.json();
+
+      return payload.data ?? [];
+    },
+
+    getTotalCount: async (response) => {
+      const payload: ListResponse = await response.json();
+
+      return payload.pagination?.total ?? payload.data?.length ?? 0;
+    },
+  },
 };
+
+const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);
+
+export { dataProvider };

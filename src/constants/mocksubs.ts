@@ -7,7 +7,7 @@ export const MOCK_SUBJECTS: Subject[] = [
         name: "Introduction to Computer Science",
         department: "CS",
         description: "Learn programming fundamentals, algorithms, and problem-solving techniques.",
-        created_at: "2026-01-15T00:00:00.000Z",
+        createdAt: "2026-01-15T00:00:00.000Z",
     },
     {
         id: 2,
@@ -15,7 +15,7 @@ export const MOCK_SUBJECTS: Subject[] = [
         name: "Calculus II",
         department: "Math",
         description: "Explore integration techniques, infinite series, and their applications.",
-        created_at: "2026-01-15T00:00:00.000Z",
+        createdAt: "2026-01-15T00:00:00.000Z",
     },
     {
         id: 3,
@@ -23,6 +23,6 @@ export const MOCK_SUBJECTS: Subject[] = [
         name: "Academic Writing",
         department: "English",
         description: "Develop research, critical reading, and essay-writing skills for university study.",
-        created_at: "2026-01-15T00:00:00.000Z",
+        createdAt: "2026-01-15T00:00:00.000Z",
     },
 ];
